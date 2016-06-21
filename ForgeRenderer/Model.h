@@ -62,12 +62,17 @@ namespace Forge
 
 		void MakeVertexRHW(VertexData & vd);
 
+		void DrawLine(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2);
+		void DrawPixel(uint32_t x, uint32_t y, uint32_t color);
+
 	private:
 		RenderMode              render_mode_;
 		std::vector<VertexData> mesh_vb_;
 		std::vector<IndexData>  mesh_ib_;
 		uint32_t                texture_buffer_[256][256];
 		RenderDevice*           device_;
+		uint32_t                line_color_;
+		uint32_t                count_;
 	};
 }
 

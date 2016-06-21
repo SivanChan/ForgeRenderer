@@ -70,6 +70,13 @@ namespace Forge
 			a = static_cast<uint8_t>(Math::clamp(color_.w(), 0.0f, 1.0f) * 255 + 0.5f );
 		}
 
+		uint32_t RGB_() const
+		{
+			uint8_t r, g, b, a;
+			this->RGBA(r, g, b, a);
+			return (r << 16) | (g << 8) | (b << 0);
+		}
+
 		uint32_t ARGB() const
 		{
 			uint8_t r, g, b, a;

@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "ForgeRender.h"
+#include "ForgeRenderer.h"
 #include "AppFramework.h"
 
 using namespace Forge;

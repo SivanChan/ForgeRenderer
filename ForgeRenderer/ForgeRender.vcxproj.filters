@@ -30,9 +30,6 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ForgeRender.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="RenderDevice.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -93,12 +90,12 @@
     <ClInclude Include="KeyboardInput.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ForgeRenderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ForgeRender.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="RenderDevice.cpp">
@@ -114,6 +111,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="KeyboardInput.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ForgeRenderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

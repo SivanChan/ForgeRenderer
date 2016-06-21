@@ -40,7 +40,7 @@ namespace Forge
 
 		// camera
 		camera_ = std::make_shared<Camera>();
-		camera_->SetViewParams( float3(3.0f, 0.0f, 0.0f), float3(0.0f, 0.0f, 0.0f), float3(0.0f, 0.0f, 1.0f) );
+		camera_->SetViewParams( float3(3.5f, 0.0f, 0.0f), float3(0.0f, 0.0f, 0.0f), float3(0.0f, 0.0f, 1.0f) );
 		camera_->SetProjParams( FORGE_PIdiv2, float(width_) / float(height_), 1.0f, 500.0f );
 
 		// model
@@ -141,6 +141,11 @@ namespace Forge
 	uint32_t RenderDevice::GetHeight() const
 	{
 		return height_;
+	}
+
+	void RenderDevice::SetFrameBufferData(uint32_t x, uint32_t y, uint32_t data)
+	{
+		frame_buffer_[x][y] = data;
 	}
 
 	bool RenderDevice::InitDevice(HWND hWnd, uint32_t width, uint32_t height)

@@ -36,6 +36,8 @@ namespace Forge
 		uint32_t GetWidth()  const;
 		uint32_t GetHeight() const;
 
+		void SetFrameBufferData(uint32_t x, uint32_t y, uint32_t data);
+
 	protected:
 		bool InitDevice(HWND hWnd, uint32_t width, uint32_t height);
 		void Render();

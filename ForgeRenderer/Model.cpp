@@ -6,9 +6,10 @@
 
 namespace Forge
 {
-	Model::Model() : render_mode_(RM_Texture)
+	Model::Model() : render_mode_(RM_Line), count_(0)
 	{
-
+		Color color(1.0f, 0.0f, 0.0f, 1.0f);
+		line_color_ = color.RGB_();
 	}
 
 	Model::~Model()
@@ -35,6 +36,7 @@ namespace Forge
 
 	void Model::Render()
 	{
+		count_ = 0;
 		float4x4 const & wvp = device_->WorldViewProjMatrix();
 		for (auto it = mesh_ib_.begin(); it != mesh_ib_.end(); ++it)
 			RenderTriangle(wvp, mesh_vb_[it->a], mesh_vb_[it->b], mesh_vb_[it->c]);
@@ -136,7 +138,13 @@ namespace Forge
 		float w2 = Homogenize(p2);
 		float w3 = Homogenize(p3);
 
-		if (render_mode_ != RM_Line)
+		if (render_mode_ == RM_Line)
+		{
+			DrawLine(static_cast<uint32_t>(p1.x()), static_cast<uint32_t>(p1.y()), static_cast<uint32_t>(p2.x()), static_cast<uint32_t>(p2.y()));
+			DrawLine(static_cast<uint32_t>(p2.x()), static_cast<uint32_t>(p2.y()), static_cast<uint32_t>(p3.x()), static_cast<uint32_t>(p3.y()));
+			DrawLine(static_cast<uint32_t>(p3.x()), static_cast<uint32_t>(p3.y()), static_cast<uint32_t>(p1.x()), static_cast<uint32_t>(p1.y()));
+		}
+		else
 		{
 			VertexData v1, v2, v3;
 			v1 = a; v2 = b; v3 = c;
@@ -144,7 +152,6 @@ namespace Forge
 			v1.position = p1; v2.position = p2; v3.position = p3;
 			v1.position.w() = w1; v2.position.w() = w2;  v3.position.w() = w3;
 			MakeVertexRHW(v1); MakeVertexRHW(v2); MakeVertexRHW(v3);
-
 		}
 	}
 
@@ -188,6 +195,57 @@ namespace Forge
 		vd.color.r() *= rhw;
 		vd.color.g() *= rhw;
 		vd.color.b() *= rhw;
+	}
+
+	void Model::DrawLine(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2)
+	{	
+		++count_;
+		if (x1 == x2 && y1 == y2) // 点重合
+		{
+			DrawPixel(x1,y1,line_color_);
+		}
+		else if (x1 == x2) // 垂直
+		{
+			int step = (y1 <= y2) ? 1 : -1;
+			for (uint32_t y = y1; y <= y2; y += step)
+				DrawPixel(x1,y,line_color_);
+		}
+		else if (y1 == y2) // 水平
+		{
+			int step = (x1 <= x2) ? 1 : -1;
+			for (uint32_t x = x1; x <= x2; x += step)
+				DrawPixel(x,y1,line_color_);
+		}
+		else // 斜线
+		{
+			int dx = x2 - x1;
+			int dy = y2 - y1;
+			int v = 0;
+
+			if ( std::abs(dx) >= std::abs(dy) )
+			{
+				int x_step = (x1 < x2) ? 1 : -1;
+				float y_step = float(dy) / std::abs(dx);
+				for (uint32_t x = x1; x <= x2;  x += x_step)
+				{
+					DrawPixel(x, static_cast<uint32_t>(y1 + (x - x1) * y_step), line_color_);
+				}
+			}
+			else
+			{
+				int y_step = (y1 < y2) ? 1 : -1;
+				float x_step = float(dx) / std::abs(dy);
+				for (uint32_t y = y1; y <= y2; y += y_step)
+				{
+					DrawPixel( static_cast<uint32_t>(x1 + (y - y1) * x_step), y, line_color_ );
+				}
+			}
+		}
+	}
+
+	void Model::DrawPixel(uint32_t x, uint32_t y, uint32_t color)
+	{
+		device_->SetFrameBufferData(x, y, color);
 	}
 
 }
