@@ -36,6 +36,7 @@ namespace Forge
 			return false;
 
 		// world matrix
+		//world_mat_.MakeIdentity();
 		world_mat_ = Math::to_matrix(Math::rotation_axis(float3(-1, -0.5, 1), 1.0f));
 
 		// camera

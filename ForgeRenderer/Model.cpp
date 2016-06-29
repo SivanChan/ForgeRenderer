@@ -6,7 +6,7 @@
 
 namespace Forge
 {
-	Model::Model() : render_mode_(RM_Line), count_(0)
+	Model::Model() : render_mode_(RM_Line)
 	{
 		Color color(1.0f, 0.0f, 0.0f, 1.0f);
 		line_color_ = color.RGB_();
@@ -36,7 +36,6 @@ namespace Forge
 
 	void Model::Render()
 	{
-		count_ = 0;
 		float4x4 const & wvp = device_->WorldViewProjMatrix();
 		for (auto it = mesh_ib_.begin(); it != mesh_ib_.end(); ++it)
 			RenderTriangle(wvp, mesh_vb_[it->a], mesh_vb_[it->b], mesh_vb_[it->c]);
@@ -199,7 +198,6 @@ namespace Forge
 
 	void Model::DrawLine(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2)
 	{	
-		++count_;
 		if (x1 == x2 && y1 == y2) // 点重合
 		{
 			DrawPixel(x1,y1,line_color_);
@@ -218,34 +216,55 @@ namespace Forge
 		}
 		else // 斜线
 		{
-			int dx = x2 - x1;
-			int dy = y2 - y1;
-			int v = 0;
-
-			if ( std::abs(dx) >= std::abs(dy) )
+			uint32_t rem = 0;
+			uint32_t dx = (x1 < x2) ? x2 - x1 : x1 - x2;
+			uint32_t dy = (y1 < y2) ? y2 - y1 : y1 - y2;
+			if (dx >= dy)
 			{
-				int x_step = (x1 < x2) ? 1 : -1;
-				float y_step = float(dy) / std::abs(dx);
-				for (uint32_t x = x1; x <= x2;  x += x_step)
+				if (x2 < x1)
 				{
-					DrawPixel(x, static_cast<uint32_t>(y1 + (x - x1) * y_step), line_color_);
+					std::swap(x1,x2);
+					std::swap(y1,y2);
 				}
-			}
+				for (uint32_t x = x1, y = y1; x <= x2; ++x)
+				{
+					DrawPixel(x, y, line_color_);
+					rem += dy;
+					if (rem >= dx)
+					{
+						rem -= dx;
+						y += (y2 >= y1) ? 1 : -1;
+						DrawPixel(x, y, line_color_);
+					}
+				}
+				DrawPixel(x2, y2, line_color_);
+			} 
 			else
 			{
-				int y_step = (y1 < y2) ? 1 : -1;
-				float x_step = float(dx) / std::abs(dy);
-				for (uint32_t y = y1; y <= y2; y += y_step)
+				if (y2 < y1)
 				{
-					DrawPixel( static_cast<uint32_t>(x1 + (y - y1) * x_step), y, line_color_ );
+					std::swap(x1,x2);
+					std::swap(y1,y2);
 				}
+				for (uint32_t x = x1, y = y1; y <= y2; ++y)
+				{
+					DrawPixel(x,y,line_color_);
+					rem += dx;
+					if (rem >= dy)
+					{
+						rem -= dy;
+						x += (x2 >= x1) ? 1 : -1;
+						DrawPixel(x,y,line_color_);
+					}
+				}
+				DrawPixel(x2,y2,line_color_);
 			}
 		}
 	}
 
 	void Model::DrawPixel(uint32_t x, uint32_t y, uint32_t color)
 	{
-		device_->SetFrameBufferData(x, y, color);
+		device_->SetFrameBufferData(y, x, color);
 	}
 
 }

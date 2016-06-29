@@ -72,7 +72,6 @@ namespace Forge
 		uint32_t                texture_buffer_[256][256];
 		RenderDevice*           device_;
 		uint32_t                line_color_;
-		uint32_t                count_;
 	};
 }
 
