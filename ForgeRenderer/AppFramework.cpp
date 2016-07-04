@@ -2,7 +2,12 @@
 #include "stdafx.h"
 #include "AppFramework.h"
 #include "RenderDevice.h"
+#include "Camera.h"
+#include "KeyboardInput.h"
 #include "Resource.h"
+
+#include <Soft/SoftRenderDevice.h>
+#include <D3D11/D3D11RenderDevice.h>
 
 namespace Forge
 {
@@ -16,15 +21,21 @@ namespace Forge
 
 	}
 
-	bool AppFramework::Initialize(HINSTANCE hInstance, uint32_t width, uint32_t height, std::wstring const & title_name)
+	bool AppFramework::Initialize(HINSTANCE hInstance, uint32_t width, uint32_t height, std::wstring const & title_name, DeviceType type)
 	{
 		// initialize window
 		if (!InitializeWindow(hInstance, width, height, title_name))
 			return false;
 
+		// camera
+		InitCamera();
+
 		// initialize device
-		if (!InitializeDevice())
+		if (!InitializeDevice(type))
 			return false;
+
+		// input
+		InitKeyboardInput();
 
 		return true;
 	}
@@ -61,7 +72,7 @@ namespace Forge
 			}
 			else
 			{
-				if (!FrameMove())
+				if (!Refresh())
 				{
 					done = true;
 				}
@@ -69,9 +80,9 @@ namespace Forge
 		}
 	}
 
-	bool AppFramework::FrameMove()
+	bool AppFramework::Refresh()
 	{
-		render_device_->FrameMove();
+		render_device_->Refresh();
 		return true;
 	}
 
@@ -143,9 +154,31 @@ namespace Forge
 		return true;
 	}
 
-	bool AppFramework::InitializeDevice()
+	bool AppFramework::InitializeDevice(DeviceType type)
 	{
-		render_device_ = std::make_shared<RenderDevice>();
-		return render_device_->Initialize(hwnd_, width_, height_);
+		device_type_ = type;
+
+		switch (type)
+		{
+		case DT_Soft:
+			render_device_ = std::make_shared<SoftRenderDevice>();
+			break;
+		case DT_D3D11:
+			render_device_ = std::make_shared<D3D11RenderDevice>();
+			break;
+		}	
+		return render_device_->Initialize(hwnd_, width_, height_, camera_.get());
+	}
+
+	void AppFramework::InitCamera()
+	{
+		camera_ = std::make_shared<Camera>();
+		camera_->SetViewParams(float3(3.5f, 0.0f, 0.0f), float3(0.0f, 0.0f, 0.0f), float3(0.0f, 0.0f, 1.0f));
+		camera_->SetProjParams(FORGE_PIdiv2, float(width_) / float(height_), 1.0f, 500.0f);
+	}
+
+	void AppFramework::InitKeyboardInput()
+	{
+		input_ = std::make_shared<KeyboardInput>();
 	}
 }

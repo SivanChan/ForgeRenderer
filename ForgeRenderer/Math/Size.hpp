@@ -111,7 +111,6 @@ namespace Forge
 
 		this_type & operator /= (T const & rhs)
 		{
-			assert(rhs);
 			size_.x() /= rhs;
 			size_.y() /= rhs;
 			return *this;
@@ -119,13 +118,11 @@ namespace Forge
 
 		this_type operator / (T const & rhs) const
 		{
-			assert(rhs);
 			return Size_T<T>(this->cx()/rhs, this->cy()/rhs);
 		}
 
 		this_type & operator *= (T const & rhs)
 		{
-			assert(rhs);
 			size_.x() *= rhs;
 			size_.y() *= rhs;
 			return *this;
@@ -133,7 +130,6 @@ namespace Forge
 
 		this_type operator * (T const & rhs) const
 		{
-			assert(rhs);
 			return Size_T<T>(this->cx()*rhs, this->cy()*rhs);
 		}
 

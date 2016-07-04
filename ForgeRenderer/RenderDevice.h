@@ -18,52 +18,48 @@ namespace Forge
 	class RenderDevice
 	{
 	public:
-		RenderDevice();
-		~RenderDevice();
+		RenderDevice() : camera_(NULL), background_color_(10 / 255.0f, 59 / 255.0f, 118 / 255.0f, 1.0f) {}
+		virtual ~RenderDevice() {}
 
-		bool Initialize(HWND hWnd, uint32_t width, uint32_t height);
-		void ShutDown();
-		bool FrameMove();
+		virtual bool Initialize(HWND hWnd, uint32_t width, uint32_t height, Camera* camera);
+		virtual void ShutDown() = 0;
+		virtual bool Refresh() = 0;
+		virtual std::wstring const & Name() const = 0;
 
-		void BeginFrame();
-		void EndFrame();
+		// Ö¡»º³å³ß´ç
+		virtual uint32_t GetWidth()  const;
+		virtual uint32_t GetHeight() const;
 
-		void ClearFrameBuffer(Color const & clr, float depth = 1.0f);
+		// äÖÈ¾Ïà¹Ø
+		virtual void BeginFrame() = 0;
+		virtual void Render()     = 0;
+		virtual void EndFrame()   = 0;
 
-		void UpdateTexture(void* buffer, uint32_t pitch, uint32_t width, uint32_t height);
-		float4x4 const & WorldViewProjMatrix();
+		// Çå³ýÖ¡»º³å
+		virtual void ClearFrameBuffer(Color const & clr, float depth = 1.0f) = 0;
 
-		uint32_t GetWidth()  const;
-		uint32_t GetHeight() const;
+		// model
+		virtual ModelPtr CreateModel() = 0;
 
-		void SetFrameBufferData(uint32_t x, uint32_t y, uint32_t data);
+		// wvp
+		virtual float4x4 const & WorldViewProjMatrix();
+
+		// set background color
+		void SetBackgroundColor(Color const & color);
 
 	protected:
-		bool InitDevice(HWND hWnd, uint32_t width, uint32_t height);
-		void Render();
+		virtual bool InitDevice(HWND hWnd, uint32_t width, uint32_t height);
+		virtual void InitModel();
 
-	private:
-		HWND				hwnd_;
-		HDC					hdc_;
+	protected:
+		HWND                hwnd_;
 		uint32_t			width_;
 		uint32_t			height_;
-		HBITMAP				bitmap_;
-		HBITMAP				bitmap_old_;
-		std::vector<char>   buffer_pool_;// »º³åÇø
-		unsigned char*      dib_buffer_; // Î»Í¼Êý¾ÝÖ¸Õë
-		uint32_t**          frame_buffer_;
-		float**             depth_buffer_;
-		uint32_t**          texture_buffer_;
-		Color               background_color_;
-		float               depth_clear_value_;
-		uint32_t            texture_width_;
-		uint32_t            texture_height_;
 		float4x4            world_mat_;
 		mutable float4x4    wvp_mat_;
-
+		Color               background_color_;
+		Camera*             camera_;
 		ModelPtr            model_;
-		CameraPtr           camera_;
-		KeyboardInputPtr    input_;
 	};
 }
 

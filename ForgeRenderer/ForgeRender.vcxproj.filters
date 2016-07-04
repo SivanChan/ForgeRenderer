@@ -16,6 +16,12 @@
     <Filter Include="Math">
       <UniqueIdentifier>{908011c2-dc30-4c06-a5da-4e8e037fe418}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Soft">
+      <UniqueIdentifier>{be167256-41a8-459e-8743-10f79d07439f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="D3D11">
+      <UniqueIdentifier>{91a2610f-fca6-49d7-838e-0d78077155f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -93,12 +99,27 @@
     <ClInclude Include="ForgeRenderer.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Soft\SoftRenderDevice.h">
+      <Filter>Soft</Filter>
+    </ClInclude>
+    <ClInclude Include="Soft\SoftModel.h">
+      <Filter>Soft</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11\D3D11Model.h">
+      <Filter>D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11\D3D11RenderDevice.h">
+      <Filter>D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11\D3D11Declare.h">
+      <Filter>D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderDevice.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="AppFramework.cpp">
@@ -114,6 +135,24 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ForgeRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Soft\SoftModel.cpp">
+      <Filter>Soft</Filter>
+    </ClCompile>
+    <ClCompile Include="Soft\SoftRenderDevice.cpp">
+      <Filter>Soft</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderDevice.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11\D3D11Model.cpp">
+      <Filter>D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11\D3D11RenderDevice.cpp">
+      <Filter>D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
