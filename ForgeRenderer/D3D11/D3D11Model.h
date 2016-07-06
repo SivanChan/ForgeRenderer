@@ -22,16 +22,25 @@ namespace Forge
 		D3D11Model();
 		~D3D11Model();
 
+		virtual void Initialize(std::string const & mesh_file, std::string const & texture_file, RenderDevice* device);
 		virtual void Render();
 
 	protected:
 		virtual void InitMesh(std::string const & mesh_file);
 		virtual void InitTexture(std::string const & texture_file);
+		void InitShader();
+		void RenderShader();
+		void OutputShaderErrorMessage(ID3D10Blob*, HWND, WCHAR*);
 
 	private:
 		ID3D11BufferPtr             vertex_buffer_;
 		ID3D11BufferPtr             index_buffer_;
 		ID3D11ShaderResourceViewPtr texture_;
+		ID3D11VertexShaderPtr       vertex_shader_;
+		ID3D11PixelShaderPtr        pixel_shader_;
+		ID3D11InputLayoutPtr        input_layout_;
+		ID3D11BufferPtr             matrix_buffer_;
+		ID3D11SamplerStatePtr       sampler_state_;
 	};
 }
 

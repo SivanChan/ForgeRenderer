@@ -55,6 +55,6 @@ namespace Forge
 	void RenderDevice::InitModel()
 	{
 		model_ = this->CreateModel();
-		model_->Initialize("cube.txt", "tex.bmp", this);
+		model_->Initialize("./data/cube.txt", "./data/ChessBoard.dds", this);
 	}
 }

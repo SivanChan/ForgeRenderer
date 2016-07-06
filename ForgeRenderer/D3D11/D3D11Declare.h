@@ -21,16 +21,20 @@
 
 namespace Forge
 {
-	typedef std::shared_ptr<IDXGISwapChain>          IDXGISwapChainPtr;
-	typedef std::shared_ptr<ID3D11Device>            ID3D11DevicePtr;
-	typedef std::shared_ptr<ID3D11DeviceContext>     ID3D11DeviceContextPtr;
-	typedef std::shared_ptr<ID3D11RenderTargetView>  ID3D11RenderTargetViewPtr;
-	typedef std::shared_ptr<ID3D11Texture2D>         ID3D11Texture2DPtr;
-	typedef std::shared_ptr<ID3D11DepthStencilState> ID3D11DepthStencilStatePtr;
-	typedef std::shared_ptr<ID3D11DepthStencilView>  ID3D11DepthStencilViewPtr;
-	typedef std::shared_ptr<ID3D11RasterizerState>   ID3D11RasterizerStatePtr;
-	typedef std::shared_ptr<ID3D11Buffer>            ID3D11BufferPtr;
+	typedef std::shared_ptr<IDXGISwapChain>           IDXGISwapChainPtr;
+	typedef std::shared_ptr<ID3D11Device>             ID3D11DevicePtr;
+	typedef std::shared_ptr<ID3D11DeviceContext>      ID3D11DeviceContextPtr;
+	typedef std::shared_ptr<ID3D11RenderTargetView>   ID3D11RenderTargetViewPtr;
+	typedef std::shared_ptr<ID3D11Texture2D>          ID3D11Texture2DPtr;
+	typedef std::shared_ptr<ID3D11DepthStencilState>  ID3D11DepthStencilStatePtr;
+	typedef std::shared_ptr<ID3D11DepthStencilView>   ID3D11DepthStencilViewPtr;
+	typedef std::shared_ptr<ID3D11RasterizerState>    ID3D11RasterizerStatePtr;
+	typedef std::shared_ptr<ID3D11Buffer>             ID3D11BufferPtr;
 	typedef std::shared_ptr<ID3D11ShaderResourceView> ID3D11ShaderResourceViewPtr;
+	typedef std::shared_ptr<ID3D11VertexShader>       ID3D11VertexShaderPtr;
+	typedef std::shared_ptr<ID3D11PixelShader>        ID3D11PixelShaderPtr;
+	typedef std::shared_ptr<ID3D11InputLayout>        ID3D11InputLayoutPtr;
+	typedef std::shared_ptr<ID3D11SamplerState>       ID3D11SamplerStatePtr;
 }
 
 #endif // Forge_D3D11Declare_hpp__

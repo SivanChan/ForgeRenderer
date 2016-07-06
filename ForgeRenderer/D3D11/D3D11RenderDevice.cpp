@@ -58,7 +58,7 @@ namespace Forge
 		
 		result = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, &feature_level, 1, 
 			D3D11_SDK_VERSION, &swap_chain_desc, &swap_chain,
-			&d3d_device, &feature_level, &d3d_context);
+			&d3d_device, NULL, &d3d_context);
 		if (FAILED(result))
 			return false;
 
@@ -66,6 +66,7 @@ namespace Forge
 		d3d_device_  = MakeCOMPtr(d3d_device);
 		d3d_context_ = MakeCOMPtr(d3d_context);
 
+		// back buffer
 		result = swap_chain_->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&back_buffer);
 		if (FAILED(result))
 			return false;
@@ -79,6 +80,7 @@ namespace Forge
 			back_buffer = NULL;
 		}
 
+		// depth stencil
 		ZeroMemory(&depth_buffer, sizeof(depth_buffer));
 		depth_buffer.Width = width_;
 		depth_buffer.Height = height_;
@@ -132,6 +134,7 @@ namespace Forge
 
 		d3d_context_->OMSetRenderTargets(1, &rtv, depth_stencil_view_.get());
 
+		// rasterizer
 		ZeroMemory(&rasterizer_desc, sizeof(rasterizer_desc));
 		rasterizer_desc.AntialiasedLineEnable = true;
 		rasterizer_desc.CullMode = D3D11_CULL_NONE;
@@ -150,6 +153,7 @@ namespace Forge
 		rasterizer_state_ = MakeCOMPtr(rasterizer_state);
 		d3d_context_->RSSetState(rasterizer_state);
 
+		// viewport
 		viewport.Width = (float)width_;
 		viewport.Height = (float)height_;
 		viewport.MinDepth = 0.0f;

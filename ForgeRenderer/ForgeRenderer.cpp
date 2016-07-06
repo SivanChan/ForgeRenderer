@@ -12,7 +12,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
-	DeviceType type = DT_Soft;
+	DeviceType type = DT_D3D11;
 	std::wstring device_type(lpCmdLine);
 	if (device_type == L"soft")
 		type = DT_Soft;
@@ -20,7 +20,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		type = DT_D3D11;
 
 	AppFrameworkPtr app = std::make_shared<AppFramework>();
-	if (!app->Initialize(hInstance, 800, 600, L"一个简单的光栅化渲染器实现"))
+	if (!app->Initialize(hInstance, 800, 600, L"一个简单的光栅化渲染器实现",type))
 		return 1;
 	app->Run();
 	app->ShutDown();
