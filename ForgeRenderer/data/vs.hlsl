@@ -4,6 +4,7 @@
 cbuffer MatrixBuffer
 {
     matrix wvp;
+	float4 flag;
 };
 
 // vertex input type

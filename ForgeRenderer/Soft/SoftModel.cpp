@@ -87,7 +87,7 @@ namespace Forge
 		float w2 = Homogenize(p2);
 		float w3 = Homogenize(p3);
 
-		if (render_mode_ == RM_Line)
+		if (render_mode_ == RM_WireFrame)
 		{
 			DrawLine(static_cast<uint32_t>(p1.x()), static_cast<uint32_t>(p1.y()), static_cast<uint32_t>(p2.x()), static_cast<uint32_t>(p2.y()));
 			DrawLine(static_cast<uint32_t>(p2.x()), static_cast<uint32_t>(p2.y()), static_cast<uint32_t>(p3.x()), static_cast<uint32_t>(p3.y()));
@@ -167,8 +167,8 @@ namespace Forge
 		else // Ð±Ïß
 		{
 			uint32_t rem = 0;
-			uint32_t dx = std::abs(int(x1 - x2)); //(x1 < x2) ? x2 - x1 : x1 - x2;
-			uint32_t dy = std::abs(int(y1 - y2)); //(y1 < y2) ? y2 - y1 : y1 - y2;
+			uint32_t dx = std::abs(int(x1 - x2)); 
+			uint32_t dy = std::abs(int(y1 - y2)); 
 			if (dx >= dy)
 			{
 				if (x2 < x1)

@@ -13,6 +13,20 @@
 
 namespace Forge
 {
+	// 设备类型
+	enum DeviceType
+	{
+		DT_Soft,
+		DT_D3D11
+	};
+
+	// 填充模式
+	enum RenderMode
+	{
+		RM_WireFrame,
+		RM_Solid
+	};
+
 	// types
 	using std::uint64_t;
 	using std::uint32_t;

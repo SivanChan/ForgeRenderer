@@ -11,7 +11,7 @@
 
 namespace Forge
 {
-	AppFramework::AppFramework() : hwnd_(NULL), hinstance_(NULL), class_name_(L"ForgeRender")
+	AppFramework::AppFramework() : hwnd_(NULL), hinstance_(NULL), class_name_(L"ForgeRender"), render_mode_(RM_WireFrame)
 	{
 
 	}
@@ -31,11 +31,14 @@ namespace Forge
 		InitCamera();
 
 		// initialize device
-		if (!InitializeDevice(type))
+		if (!InitializeDevice(type,render_mode_))
 			return false;
 
 		// input
 		InitKeyboardInput();
+
+		// update title name
+		UpdateTitle();
 
 		return true;
 	}
@@ -82,6 +85,20 @@ namespace Forge
 
 	bool AppFramework::Refresh()
 	{
+		if (input_->IsKeyDown(VK_ESCAPE))
+			return false;
+
+		if (input_->IsKeyDown('W'))
+		{
+			render_device_->SetRenderMode(RM_WireFrame);
+			render_mode_ = RM_WireFrame;
+		}
+		else if (input_->IsKeyDown('S'))
+		{
+			render_device_->SetRenderMode(RM_Solid);
+			render_mode_ = RM_Solid;
+		}
+
 		render_device_->Refresh();
 		return true;
 	}
@@ -90,6 +107,12 @@ namespace Forge
 	{
 		switch (uMsg)
 		{
+		case WM_KEYDOWN:
+			input_->KeyDown((uint32_t)wParam);
+			return 0;
+		case WM_KEYUP:
+			input_->KeyUp((uint32_t)wParam);
+			return 0;
 		case WM_CLOSE:
 			::PostQuitMessage(0);
 			return 0;
@@ -154,17 +177,17 @@ namespace Forge
 		return true;
 	}
 
-	bool AppFramework::InitializeDevice(DeviceType type)
+	bool AppFramework::InitializeDevice(DeviceType type, RenderMode render_mode)
 	{
 		device_type_ = type;
 
 		switch (type)
 		{
 		case DT_Soft:
-			render_device_ = std::make_shared<SoftRenderDevice>();
+			render_device_ = std::make_shared<SoftRenderDevice>(render_mode);
 			break;
 		case DT_D3D11:
-			render_device_ = std::make_shared<D3D11RenderDevice>();
+			render_device_ = std::make_shared<D3D11RenderDevice>(render_mode);
 			break;
 		}	
 		return render_device_->Initialize(hwnd_, width_, height_, camera_.get());
@@ -180,5 +203,14 @@ namespace Forge
 	void AppFramework::InitKeyboardInput()
 	{
 		input_ = std::make_shared<KeyboardInput>();
+	}
+
+	void AppFramework::UpdateTitle()
+	{
+		std::wstring title_name;
+		title_name.append(title_name_);
+		title_name.append(L" - ");
+		title_name.append(render_device_->Name());
+		SetWindowText(hwnd_, title_name.c_str());
 	}
 }

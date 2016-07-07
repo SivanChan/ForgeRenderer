@@ -4,7 +4,6 @@
 
 namespace Forge
 {
-
 	KeyboardInput::KeyboardInput()
 	{
 		keys_ = {};
@@ -17,17 +16,16 @@ namespace Forge
 
 	void KeyboardInput::KeyDown(uint32_t key)
 	{
-
+		keys_[key] = true;
 	}
 
 	void KeyboardInput::KeyUp(uint32_t key)
 	{
-
+		keys_[key] = false;
 	}
 
 	bool KeyboardInput::IsKeyDown(uint32_t key)
 	{
-		return false;
+		return keys_[key];
 	}
-
 }

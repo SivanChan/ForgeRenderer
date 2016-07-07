@@ -18,7 +18,7 @@ namespace Forge
 	class RenderDevice
 	{
 	public:
-		RenderDevice() : camera_(NULL), background_color_(10 / 255.0f, 59 / 255.0f, 118 / 255.0f, 1.0f) {}
+		RenderDevice(RenderMode render_mode) : hwnd_(NULL), render_mode_(render_mode), camera_(NULL), background_color_(10 / 255.0f, 59 / 255.0f, 118 / 255.0f, 1.0f) {}
 		virtual ~RenderDevice() {}
 
 		virtual bool Initialize(HWND hWnd, uint32_t width, uint32_t height, Camera* camera);
@@ -44,6 +44,9 @@ namespace Forge
 		// wvp
 		virtual float4x4 const & WorldViewProjMatrix();
 
+		// render mode
+		virtual void SetRenderMode(RenderMode render_mode);
+
 		// set background color
 		void SetBackgroundColor(Color const & color);
 
@@ -53,6 +56,7 @@ namespace Forge
 
 	protected:
 		HWND                hwnd_;
+		RenderMode          render_mode_;
 		uint32_t			width_;
 		uint32_t			height_;
 		float4x4            world_mat_;

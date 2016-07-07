@@ -38,6 +38,11 @@ namespace Forge
 		return wvp_mat_;
 	}
 
+	void RenderDevice::SetRenderMode(RenderMode render_mode)
+	{
+		render_mode_ = render_mode;
+	}
+
 	void RenderDevice::SetBackgroundColor(Color const & color)
 	{
 		background_color_ = color;

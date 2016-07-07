@@ -18,7 +18,7 @@ namespace Forge
 	class SoftRenderDevice : public RenderDevice
 	{
 	public:
-		SoftRenderDevice();
+		SoftRenderDevice(RenderMode render_mode);
 		~SoftRenderDevice();
 
 		virtual void ShutDown();

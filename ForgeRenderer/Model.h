@@ -9,18 +9,12 @@
 
 #pragma once
 
+#include <PreDeclare.h>
 #include <Math/Math.hpp>
 #include <vector>
 
 namespace Forge
 {
-	enum RenderMode
-	{
-		RM_Line,
-		RM_FillColor,
-		RM_Texture
-	};
-
 	class Model
 	{
 	public:

@@ -174,4 +174,12 @@
       <Filter>Math</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="data\ps.hlsl">
+      <Filter>D3D11</Filter>
+    </FxCompile>
+    <FxCompile Include="data\vs.hlsl">
+      <Filter>D3D11</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>

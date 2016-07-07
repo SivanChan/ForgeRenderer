@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "ForgeRenderer.h"
 #include "AppFramework.h"
+#include <iostream>
 
 using namespace Forge;
 

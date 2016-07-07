@@ -6,7 +6,7 @@
 
 namespace Forge
 {
-	SoftRenderDevice::SoftRenderDevice() : RenderDevice(), hwnd_(NULL),
+	SoftRenderDevice::SoftRenderDevice(RenderMode render_mode) : RenderDevice(render_mode), hwnd_(NULL),
 		hdc_(NULL),
 		bitmap_(NULL),
 		bitmap_old_(NULL),

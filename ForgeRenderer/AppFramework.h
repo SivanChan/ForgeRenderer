@@ -1,7 +1,7 @@
 /********************************************************************
 	created  :	2016/6/16
 	author   :	Sivan
-	source   :  äÖÈ¾´°¿Ú
+	source   :  ¿ò¼Ü
 *********************************************************************/
 
 #ifndef Forge_RenderWindow_hpp__
@@ -13,12 +13,6 @@
 
 namespace Forge
 {
-	enum DeviceType
-	{
-		DT_Soft,
-		DT_D3D11
-	};
-
 	class AppFramework
 	{
 	public:
@@ -35,19 +29,20 @@ namespace Forge
 
 	protected:
 		bool InitializeWindow(HINSTANCE hInstance, uint32_t width, uint32_t height, std::wstring const & title_name);
-		bool InitializeDevice(DeviceType type);
+		bool InitializeDevice(DeviceType type, RenderMode render_mode);
 		void InitCamera();
 		void InitKeyboardInput();
 		void InitModel();
+		void UpdateTitle();
 
 	private:
 		HWND				hwnd_;
 		uint32_t			width_;
 		uint32_t			height_;
 		HINSTANCE			hinstance_;
-
 		std::wstring		class_name_;
 		std::wstring		title_name_;
+		RenderMode          render_mode_;
 
 		DeviceType          device_type_;
 		RenderDevicePtr     render_device_;

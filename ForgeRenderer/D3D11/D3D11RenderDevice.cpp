@@ -5,7 +5,7 @@
 
 namespace Forge
 {
-	D3D11RenderDevice::D3D11RenderDevice() : RenderDevice()
+	D3D11RenderDevice::D3D11RenderDevice(RenderMode render_mode) : RenderDevice(render_mode)
 	{
 
 	}
@@ -34,7 +34,8 @@ namespace Forge
 		D3D11_DEPTH_STENCIL_VIEW_DESC depth_stencil_view_desc;
 		ID3D11DepthStencilView* depth_stencil_view = NULL;
 		D3D11_RASTERIZER_DESC rasterizer_desc;
-		ID3D11RasterizerState* rasterizer_state = NULL;
+		ID3D11RasterizerState* rasterizer_state_frame = NULL;
+		ID3D11RasterizerState* rasterizer_state_solid = NULL;
 		D3D11_VIEWPORT viewport;
 
 		ZeroMemory(&swap_chain_desc, sizeof(swap_chain_desc));
@@ -135,23 +136,37 @@ namespace Forge
 		d3d_context_->OMSetRenderTargets(1, &rtv, depth_stencil_view_.get());
 
 		// rasterizer
+		// frame
 		ZeroMemory(&rasterizer_desc, sizeof(rasterizer_desc));
 		rasterizer_desc.AntialiasedLineEnable = true;
 		rasterizer_desc.CullMode = D3D11_CULL_NONE;
 		rasterizer_desc.DepthBias = 0;
 		rasterizer_desc.DepthBiasClamp = 0.0f;
 		rasterizer_desc.DepthClipEnable = true;
-		rasterizer_desc.FillMode = D3D11_FILL_SOLID;
+		rasterizer_desc.FillMode = D3D11_FILL_WIREFRAME;
 		rasterizer_desc.FrontCounterClockwise = false;
 		rasterizer_desc.MultisampleEnable = false;
 		rasterizer_desc.ScissorEnable = false;
 		rasterizer_desc.SlopeScaledDepthBias = 0.0f;
 
-		result = d3d_device_->CreateRasterizerState(&rasterizer_desc, &rasterizer_state);
+		result = d3d_device_->CreateRasterizerState(&rasterizer_desc, &rasterizer_state_frame);
 		if (FAILED(result))
 			return false;
-		rasterizer_state_ = MakeCOMPtr(rasterizer_state);
-		d3d_context_->RSSetState(rasterizer_state);
+		rasterizer_state_frame_ = MakeCOMPtr(rasterizer_state_frame);
+
+		// solid
+		//rasterizer_desc.CullMode = D3D11_CULL_BACK;
+		rasterizer_desc.FillMode = D3D11_FILL_SOLID;
+		result = d3d_device_->CreateRasterizerState(&rasterizer_desc, &rasterizer_state_solid);
+		if (FAILED(result))
+			return false;
+		rasterizer_state_solid_ = MakeCOMPtr(rasterizer_state_solid);
+
+		// set rasterizer state
+		if (render_mode_ == RM_WireFrame)
+			d3d_context_->RSSetState(rasterizer_state_frame);
+		else
+			d3d_context_->RSSetState(rasterizer_state_solid);
 
 		// viewport
 		viewport.Width = (float)width_;
@@ -167,7 +182,7 @@ namespace Forge
 
 	void D3D11RenderDevice::ShutDown()
 	{
-		rasterizer_state_.reset();
+		rasterizer_state_frame_.reset();
 		depth_stencil_view_.reset();
 		depth_stencil_state_.reset();
 		depth_stencil_buffer_.reset();
@@ -208,19 +223,28 @@ namespace Forge
 
 	void D3D11RenderDevice::ClearFrameBuffer(Color const & clr, float depth /*= 1.0f*/)
 	{
-		float color[4];
-		color[0] = clr.r();
-		color[1] = clr.g();
-		color[2] = clr.b();
-		color[3] = clr.a();
-
-		d3d_context_->ClearRenderTargetView(rtv_.get(), color);
+		d3d_context_->ClearRenderTargetView(rtv_.get(), (float*)&clr);
 		d3d_context_->ClearDepthStencilView(depth_stencil_view_.get(), D3D11_CLEAR_DEPTH, depth, 0);
 	}
 
 	Forge::ModelPtr D3D11RenderDevice::CreateModel()
 	{
 		return std::make_shared<D3D11Model>();
+	}
+
+	void D3D11RenderDevice::SetRenderMode(RenderMode render_mode)
+	{
+		if (render_mode_ != render_mode)
+		{
+			render_mode_ = render_mode;
+
+			// set rasterizer state
+			if (render_mode_ == RM_WireFrame)
+				d3d_context_->RSSetState(rasterizer_state_frame_.get());
+			else
+				d3d_context_->RSSetState(rasterizer_state_solid_.get());
+			model_->SetRenderMode(render_mode_);
+		}
 	}
 
 	Forge::ID3D11DevicePtr const & D3D11RenderDevice::GetD3D11Device() const

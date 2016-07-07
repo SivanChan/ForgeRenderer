@@ -19,6 +19,13 @@ namespace Forge
 	class D3D11Model : public Model
 	{
 	public:
+		struct ConstBufferType
+		{
+			float4x4 wvp;
+			float4   flag;
+		};
+
+	public:
 		D3D11Model();
 		~D3D11Model();
 
@@ -39,7 +46,7 @@ namespace Forge
 		ID3D11VertexShaderPtr       vertex_shader_;
 		ID3D11PixelShaderPtr        pixel_shader_;
 		ID3D11InputLayoutPtr        input_layout_;
-		ID3D11BufferPtr             matrix_buffer_;
+		ID3D11BufferPtr             const_buffer_;
 		ID3D11SamplerStatePtr       sampler_state_;
 	};
 }

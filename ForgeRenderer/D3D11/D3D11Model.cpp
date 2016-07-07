@@ -151,10 +151,8 @@ namespace Forge
 		input_element[1].InstanceDataStepRate = 0;
 
 		num_elements = sizeof(input_element) / sizeof(input_element[0]);
-		void* p = vs_buf->GetBufferPointer();
-		SIZE_T s = vs_buf->GetBufferSize();
 		result = (static_cast<D3D11RenderDevice*>(device_))->GetD3D11Device()->CreateInputLayout(input_element, num_elements,
-			p, s, &input_layout);
+			vs_buf->GetBufferPointer(), vs_buf->GetBufferSize(), &input_layout);
 		if (FAILED(result))
 			return;
 		input_layout_ = MakeCOMPtr(input_layout);
@@ -174,7 +172,7 @@ namespace Forge
 		D3D11_BUFFER_DESC matrix_buffer;
 		ID3D11Buffer* buf = NULL;
 		matrix_buffer.Usage = D3D11_USAGE_DYNAMIC;
-		matrix_buffer.ByteWidth = sizeof(float4x4);
+		matrix_buffer.ByteWidth = sizeof(ConstBufferType);
 		matrix_buffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		matrix_buffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		matrix_buffer.MiscFlags = 0;
@@ -183,7 +181,7 @@ namespace Forge
 		result = (static_cast<D3D11RenderDevice*>(device_))->GetD3D11Device()->CreateBuffer(&matrix_buffer, NULL, &buf);
 		if (FAILED(result))
 			return;
-		matrix_buffer_ = MakeCOMPtr(buf);
+		const_buffer_ = MakeCOMPtr(buf);
 
 		// sampler state
 		ID3D11SamplerState* sampler_state = NULL;
@@ -215,17 +213,22 @@ namespace Forge
 		float4x4 wvp = device_->WorldViewProjMatrix();
 		HRESULT result;
 		D3D11_MAPPED_SUBRESOURCE sub_res;
-		ID3D11Buffer* buf = matrix_buffer_.get();
+		ID3D11Buffer* buf = const_buffer_.get();
 		ID3D11ShaderResourceView* srv = texture_.get();
 
 		result = context->Map(buf, 0, D3D11_MAP_WRITE_DISCARD, 0, &sub_res);
 		if (FAILED(result))
 			return;
 		wvp = Math::transpose(wvp); // HLSL中默认为列主序，需要转置一下
-		float4x4* data = static_cast<float4x4*>(sub_res.pData);
-		*data = wvp;
+		ConstBufferType* data = static_cast<ConstBufferType*>(sub_res.pData);
+		data->wvp = wvp;
+		if (render_mode_ == RM_WireFrame)
+			data->flag = float4(1.0f, 0.0f, 0.0f, 0.0f);
+		else
+			data->flag = float4(0.0f, 0.0f, 0.0f, 0.0f);
 		context->Unmap(buf, 0);
 		context->VSSetConstantBuffers(0, 1, &buf);
+		context->PSSetConstantBuffers(0, 1, &buf);
 		context->PSSetShaderResources(0, 1, &srv);
 
 		context->IASetInputLayout(input_layout_.get());
@@ -241,30 +244,19 @@ namespace Forge
 		unsigned long bufferSize, i;
 		std::ofstream fout;
 
-
-		// Get a pointer to the error message text buffer.
 		compileErrors = (char*)(errorMessage->GetBufferPointer());
-
-		// Get the length of the message.
 		bufferSize = (unsigned long)errorMessage->GetBufferSize();
 
-		// Open a file to write the error message to.
 		fout.open("shader-error.txt");
-
-		// Write out the error message.
 		for (i = 0; i < bufferSize; i++)
 		{
 			fout << compileErrors[i];
 		}
-
-		// Close the file.
 		fout.close();
 
-		// Release the error message.
 		errorMessage->Release();
 		errorMessage = 0;
 
-		// Pop a message up on the screen to notify the user to check the text file for compile errors.
 		MessageBox(hwnd, L"Error compiling shader.  Check shader-error.txt for message.", shaderFilename, MB_OK);
 	}
 

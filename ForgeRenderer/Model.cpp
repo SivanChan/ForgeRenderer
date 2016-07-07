@@ -6,7 +6,7 @@
 
 namespace Forge
 {
-	Model::Model() : render_mode_(RM_Line)
+	Model::Model() : render_mode_(RM_WireFrame)
 	{
 		Color color(1.0f, 0.0f, 0.0f, 1.0f);
 		line_color_ = color.RGB_();
